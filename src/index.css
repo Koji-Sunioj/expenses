@@ -1,0 +1,89 @@
+input, label {
+  display:block;
+}
+
+.story {
+  display: flex;
+  justify-content: center;
+}
+
+.story > div {
+  width: 50vw;
+}
+
+body, li {
+  font-family: 'Ubuntu';
+  background-color: black;
+  color: white
+}
+
+input {
+  color-scheme: dark;
+  background: transparent;
+  padding: 0px 0px 2px 0px;
+  margin: 8px 0px 16px 0px;
+  border: none;
+  color: white;
+  border-bottom: 1px solid white;
+  outline:none;
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+}
+
+input[type=number] { 
+  -moz-appearance: textfield;
+  appearance: textfield;
+}
+
+input:hover, input:focus {
+  box-shadow: 0 5px 1px 0px rgba(255, 255, 255, 0.2);
+}
+
+fieldset {
+  border:none;
+  padding: 0px
+}
+
+button {
+  color: white;
+  background-color:blue;
+  border-radius: 8px;
+  padding: 9px;
+  border: none;
+  transition: background-color 1s;
+}
+
+button:hover, button:focus {
+  background-color:rgb(52, 114, 249) ;
+  outline: none;
+  cursor: pointer;
+  box-shadow: 0 0 1px 5px rgba(255, 255, 255, 0.2);
+}
+
+.fade-in { 
+  animation: fadeIn 1s; 
+  animation-fill-mode: forwards;
+}
+
+.fade-out { 
+  animation: fadeOut 1s;
+  animation-fill-mode: forwards;
+} 
+
+ul {
+  list-style-position: inside;
+  padding-left: 2px;
+}
+
+@keyframes fadeIn {
+  0% { opacity: 0; }
+  100% { opacity: 1; }
+}
+
+@keyframes fadeOut {
+  0% {opacity: 1;}
+  100% {opacity: 0;} 
+} 
