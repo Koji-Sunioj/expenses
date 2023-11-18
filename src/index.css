@@ -4,12 +4,13 @@ input, label {
 
 .story {
   display: flex;
+  flex-direction: column;
+  align-items: center;
   justify-content: center;
 }
 
 .story > div {
   width: 50vw;
-  align-self: flex-end;
 }
 
 body, li {
@@ -27,6 +28,10 @@ input {
   color: white;
   border-bottom: 1px solid white;
   outline:none;
+}
+
+select {
+  color-scheme: dark;
 }
 
 input::-webkit-outer-spin-button,
@@ -88,3 +93,24 @@ ul {
   0% {opacity: 1;}
   100% {opacity: 0;} 
 } 
+
+
+.expenditure {
+  padding-top: 20px;
+}
+
+.form-input {
+  display: flex;
+  flex-direction: row;
+}
+
+.form-input > div {
+  flex-grow: 1;
+  flex-basis: 50%;
+}
+
+.form-input > div >  select, input {
+  padding: 0px 0px 2px 0px;
+  margin: 8px 0px 16px 0px;
+  width: 80%;
+}

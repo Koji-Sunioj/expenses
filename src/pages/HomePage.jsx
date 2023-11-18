@@ -99,7 +99,7 @@ const HomePage = () => {
 
   return (
     <div>
-      <div className="story" style={{ height: "50vh" }}>
+      <div className="story">
         {(() => {
           switch (step()) {
             case "start":
@@ -182,7 +182,7 @@ const HomePage = () => {
           }
         })()}
       </div>
-      <div className="story" style={{ paddingTop: "40px" }}>
+      <div className="story">
         <div>
           <ul>
             {savings() !== null && (
