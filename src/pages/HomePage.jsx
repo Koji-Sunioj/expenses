@@ -1,10 +1,22 @@
-import { createSignal } from "solid-js";
+import { createSignal, createEffect } from "solid-js";
+import { useNavigate } from "@solidjs/router";
 
 const HomePage = () => {
+  const navigate = useNavigate();
   const [step, setStep] = createSignal("start");
   const [savings, setSavings] = createSignal(null);
   const [endDate, setEndDate] = createSignal(null);
   const [startDate, setStartDate] = createSignal(null);
+
+  createEffect(() => {
+    step() === "done" &&
+      setTimeout(() => {
+        const params = `/add-expenses?start=${
+          startDate().toISOString().split("T")[0]
+        }&end=${endDate().toISOString().split("T")[0]}&savings=${savings()}`;
+        navigate(params);
+      }, 2000);
+  });
 
   const doTheFade = (className) => {
     const opposites = { "fade-in": "fade-out", "fade-out": "fade-in" };
@@ -86,8 +98,8 @@ const HomePage = () => {
   };
 
   return (
-    <>
-      <div className="story">
+    <div>
+      <div className="story" style={{ height: "50vh" }}>
         {(() => {
           switch (step()) {
             case "start":
@@ -137,7 +149,18 @@ const HomePage = () => {
                     <form onSubmit={grabEndDate} className="fade-in">
                       <fieldset id="next-form">
                         <label for="formEnd">... and it's ending date?</label>
-                        <input type="date" name="formEnd" />
+                        <input
+                          type="date"
+                          name="formEnd"
+                          value={startDate().toISOString().split("T")[0]}
+                          min={
+                            new Date(
+                              startDate().setDate(startDate().getDate() + 7)
+                            )
+                              .toISOString()
+                              .split("T")[0]
+                          }
+                        />
                         <button type="submit">Next</button>
                       </fieldset>
                     </form>
@@ -159,7 +182,7 @@ const HomePage = () => {
           }
         })()}
       </div>
-      <div className="story">
+      <div className="story" style={{ paddingTop: "40px" }}>
         <div>
           <ul>
             {savings() !== null && (
@@ -180,7 +203,7 @@ const HomePage = () => {
         </div>
         {startDate()}
       </div>
-    </>
+    </div>
   );
 };
 
