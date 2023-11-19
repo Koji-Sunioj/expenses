@@ -11,9 +11,7 @@ const HomePage = () => {
   createEffect(() => {
     step() === "done" &&
       setTimeout(() => {
-        const params = `/add-expenses?start=${
-          startDate().toISOString().split("T")[0]
-        }&end=${endDate().toISOString().split("T")[0]}&savings=${savings()}`;
+        const params = `/add-expenses?start=${startDate()}&end=${endDate()}&savings=${savings()}`;
         navigate(params);
       }, 2000);
   });
@@ -75,9 +73,7 @@ const HomePage = () => {
     } = event;
 
     if (!isNaN(Date.parse(formStart))) {
-      fadeAndSet("next-form", [
-        { func: setStartDate, value: new Date(formStart) },
-      ]);
+      fadeAndSet("next-form", [{ func: setStartDate, value: formStart }]);
     }
   };
 
@@ -91,7 +87,7 @@ const HomePage = () => {
 
     if (!isNaN(Date.parse(formEnd))) {
       fadeAndSet("next-form", [
-        { func: setEndDate, value: new Date(formEnd) },
+        { func: setEndDate, value: formEnd },
         { func: setStep, value: "done" },
       ]);
     }
@@ -152,10 +148,12 @@ const HomePage = () => {
                         <input
                           type="date"
                           name="formEnd"
-                          value={startDate().toISOString().split("T")[0]}
+                          value={startDate()}
                           min={
                             new Date(
-                              startDate().setDate(startDate().getDate() + 7)
+                              new Date(startDate()).setDate(
+                                new Date(startDate()).getDate() + 7
+                              )
                             )
                               .toISOString()
                               .split("T")[0]
@@ -190,18 +188,13 @@ const HomePage = () => {
             )}
 
             {startDate() !== null && (
-              <li className="fade-in">
-                start date: {startDate().toISOString().split("T")[0]}{" "}
-              </li>
+              <li className="fade-in">start date: {startDate()} </li>
             )}
             {endDate() !== null && (
-              <li className="fade-in">
-                end date: {endDate().toISOString().split("T")[0]}{" "}
-              </li>
+              <li className="fade-in">end date: {endDate()} </li>
             )}
           </ul>
         </div>
-        {startDate()}
       </div>
     </div>
   );
