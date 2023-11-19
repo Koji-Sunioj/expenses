@@ -1,11 +1,9 @@
 import { createSignal, createEffect, onMount } from "solid-js";
-import { useParams, useSearchParams, useNavigate } from "@solidjs/router";
+import { useSearchParams, useNavigate } from "@solidjs/router";
 
 const Expenditures = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-  const [formStep, setFormStep] = createSignal("start");
-  const [expenditure, setExpenditure] = createSignal(null);
   const [expenditures, setExpenditures] = createSignal([]);
 
   const params = {
@@ -27,12 +25,8 @@ const Expenditures = () => {
   });
 
   createEffect(() => {
-    console.log(expenditure());
+    console.log(expenditures());
   });
-
-  const addFormRow = () => {
-    setFormStep("add");
-  };
 
   const WhenDiv = (frequency) => (
     <div>
@@ -65,17 +59,21 @@ const Expenditures = () => {
     </div>
   );
 
+  const handleWhenDiv = (boolean, targetDiv, frequency) => {
+    if (boolean) {
+      const whenDiv = WhenDiv(frequency);
+      targetDiv.appendChild(whenDiv);
+    } else {
+      targetDiv.innerHTML = "";
+    }
+  };
+
   const determineWhen = (event) => {
     const {
       target: { value: frequency },
     } = event;
     const targetDiv = document.getElementById("whenDiv");
-    targetDiv.innerHTML = "";
-
-    if (frequency !== "daily") {
-      const whenDiv = WhenDiv(frequency);
-      targetDiv.appendChild(whenDiv);
-    }
+    handleWhenDiv(frequency !== "daily", targetDiv, frequency);
   };
 
   const getExpenditure = (event) => {
@@ -88,9 +86,54 @@ const Expenditures = () => {
         frequency: { value: frequency },
       },
     } = event;
-
     const when = event.target.when ? event.target.when.value : null;
-    console.log(name, type, amount, frequency, when);
+    const existingIndex = expenditures().findIndex(
+      (expenditure) => expenditure.name === name
+    );
+
+    if (existingIndex === -1) {
+      setExpenditures([
+        ...expenditures(),
+        { name, type, amount, frequency, when },
+      ]);
+    } else {
+      const tempArr = [...expenditures()];
+      tempArr[existingIndex] = { name, type, amount, frequency, when };
+      setExpenditures(tempArr);
+    }
+    document.getElementById("whenDiv").innerHTML = "";
+    document.getElementById("expenditure-form").reset();
+  };
+
+  const fillForm = (expenditureName) => {
+    const expenditure = expenditures().find(
+      (expenditure) => expenditure.name === expenditureName
+    );
+    const { when, frequency } = expenditure;
+    const existingExpenditure =
+      document.querySelector("input[name=name]").value;
+    const targetDiv = document.getElementById("whenDiv");
+
+    if (existingExpenditure === expenditureName) {
+      targetDiv.innerHTML = "";
+      document.getElementById("expenditure-form").reset();
+    } else {
+      handleWhenDiv(
+        when !== null && !targetDiv.hasChildNodes(),
+        targetDiv,
+        frequency
+      );
+
+      Object.keys(expenditure).forEach((key) => {
+        const selector =
+          key === "name" || key === "amount" ? "input" : "select";
+
+        expenditure[key] !== null &&
+          Object.assign(document.querySelector(`${selector}[name=${key}]`), {
+            value: expenditure[key],
+          });
+      });
+    }
   };
 
   const { start, end, savings } = params;
@@ -105,59 +148,69 @@ const Expenditures = () => {
         <>
           <div>
             <ul>
-              <li>{start}</li>
-              <li>{end}</li>
-              <li>{savings}</li>
+              <li>savings: {savings}</li>
+              <li>start date: {start}</li>
+              <li>end date: {end}</li>
+              {expenditures().map((expenditure) => {
+                const { name, type, when, amount, frequency } = expenditure;
+                return (
+                  <li key={name} className="fade-in">
+                    <button
+                      className="li-button"
+                      onClick={() => {
+                        fillForm(name);
+                      }}
+                    >
+                      {frequency} {type} of &euro;{amount} for "{name}"{" "}
+                      {when && `on day ${when}`}
+                    </button>
+                  </li>
+                );
+              })}
             </ul>
-            <button onClick={addFormRow} disabled={formStep() === "add"}>
-              Add expenditure
-            </button>
           </div>
-
           <div>
-            <form className="expenditure" onSubmit={getExpenditure}>
+            <form id="expenditure-form" onSubmit={getExpenditure}>
               <fieldset>
-                {formStep() === "add" && (
-                  <div className="fade-in">
-                    <div className="form-input">
-                      <div>
-                        <label for="name">name</label>
-                        <input type="text" name="name" required />
-                      </div>
-                      <div>
-                        <label for="type">type</label>
-                        <select name="type" required>
-                          <option value="expense">expense</option>
-                          <option value="deposit">deposit</option>
-                        </select>
-                      </div>
+                <div className="fade-in">
+                  <div className="form-input">
+                    <div>
+                      <label for="name">name</label>
+                      <input type="text" name="name" required />
                     </div>
-                    <div className="form-input">
-                      <div>
-                        <label for="amount">amount</label>
-                        <input type="number" name="amount" required />
-                      </div>
-                      <div>
-                        <label for="frequency">frequency</label>
-                        <select
-                          name="frequency"
-                          onChange={determineWhen}
-                          required
-                        >
-                          <option value="daily">daily</option>
-                          <option value="monthly">monthly</option>
-                          <option value="weekly">weekly</option>
-                        </select>
-                      </div>
+                    <div>
+                      <label for="type">type</label>
+                      <select name="type" required>
+                        <option value="expense">expense</option>
+                        <option value="deposit">deposit</option>
+                      </select>
                     </div>
-                    <div
-                      className="form-input"
-                      style={{ width: "50%" }}
-                      id="whenDiv"
-                    ></div>
-                    <button type="submit">Submit Expenditure</button>
                   </div>
-                )}
+                  <div className="form-input">
+                    <div>
+                      <label for="amount">amount</label>
+                      <input type="number" name="amount" required />
+                    </div>
+                    <div>
+                      <label for="frequency">frequency</label>
+                      <select
+                        name="frequency"
+                        onChange={determineWhen}
+                        required
+                      >
+                        <option value="daily">daily</option>
+                        <option value="monthly">monthly</option>
+                        <option value="weekly">weekly</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div
+                    className="form-input"
+                    style={{ width: "50%" }}
+                    id="whenDiv"
+                  ></div>
+                  <button type="submit">Submit Expenditure</button>
+                </div>
               </fieldset>
             </form>
           </div>

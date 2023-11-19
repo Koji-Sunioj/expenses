@@ -59,6 +59,21 @@ fieldset {
   padding: 0px
 }
 
+.li-button {
+	background: transparent;
+	color: blue;
+	border: none;
+	padding: 0px;
+	font: inherit;
+	cursor: pointer;
+	outline: inherit;
+  transition: color 1s;
+}
+
+.li-button:hover, .li-button:focus {
+  color:rgb(52, 114, 249) 
+}
+
 button {
   color: white;
   background-color:blue;
@@ -68,18 +83,11 @@ button {
   transition: background-color 1s;
 }
 
-button:hover, button:focus {
+button:hover:not(.li-button), button:focus:not(.li-button) {
   background-color:rgb(52, 114, 249) ;
   outline: none;
   cursor: pointer;
   box-shadow: 0 0 1px 5px rgba(255, 255, 255, 0.2);
-}
-
-button:disabled,
-button[disabled]{
- 
-  background-color: #cccccc;
-  color: #666666;
 }
 
 .fade-in { 
@@ -108,7 +116,9 @@ ul {
 } 
 
 
-.expenditure {
+
+
+#expenditure-form {
   padding-top: 20px;
 }
 
