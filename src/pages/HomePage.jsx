@@ -106,7 +106,11 @@ const HomePage = () => {
                     Input financial data with customizable fields in order to
                     calculate expenses according to time.
                   </p>
-                  <button id="next-button" onClick={afterIntro}>
+                  <button
+                    id="next-button"
+                    onClick={afterIntro}
+                    className="btn-submit"
+                  >
                     Next
                   </button>
                 </div>
@@ -121,7 +125,9 @@ const HomePage = () => {
                         Tell me what how much savings you are starting on.
                       </label>
                       <input type="number" name="savings" />
-                      <button type="submit">Next</button>
+                      <button type="submit" className="btn-submit">
+                        Next
+                      </button>
                     </fieldset>
                   </form>
                 </div>
@@ -138,7 +144,9 @@ const HomePage = () => {
                           What is the starting date for calculation?
                         </label>
                         <input type="date" name="formStart" />
-                        <button type="submit">Next</button>
+                        <button type="submit" className="btn-submit">
+                          Next
+                        </button>
                       </fieldset>
                     </form>
                   ) : (
@@ -159,7 +167,9 @@ const HomePage = () => {
                               .split("T")[0]
                           }
                         />
-                        <button type="submit">Next</button>
+                        <button type="submit" className="btn-submit">
+                          Next
+                        </button>
                       </fieldset>
                     </form>
                   )}
